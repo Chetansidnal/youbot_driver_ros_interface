@@ -38,15 +38,22 @@
  ******************************************************************************/
 
 #include "youbot_driver_ros_interface/YouBotOODLWrapper.h"
-
+#include <diagnose/diaglib.hpp>  //added diagnose
 int main(int argc, char **argv)
 {
+	ros::init(argc, argv, "youbot_oodl_driver");
+	ros::NodeHandle n;
 
+	string config_json;
+	n.getParam("/config_json", config_json);
+	diaglib prodiag;
+	prodiag.start_publishing("Node Has started", config_json);
+	
   	youbot::Logger::toConsole = false;
   	youbot::Logger::toFile = false;
   	youbot::Logger::toROS = true;
-	ros::init(argc, argv, "youbot_oodl_driver");
-	ros::NodeHandle n;
+	prodiag.update("S2-000-001", "Node has started ");
+	
 	youBot::YouBotOODLWrapper youBot(n);
 	std::vector<std::string> armNames;
 
@@ -67,6 +74,7 @@ int main(int argc, char **argv)
 	std::stringstream armNameParam;
 	armNameParam << "youBotArmName" << i; // youBotArmName1 is first checked param... then youBotArmName2, etc.
 	while (n.hasParam(armNameParam.str())) {
+		prodiag.update("S2-000-002", "Retrieve all defined arm names from the launch file params");
 		std::string armName;
 		n.getParam(armNameParam.str(), armName);
 		armNames.push_back(armName);
@@ -75,20 +83,26 @@ int main(int argc, char **argv)
 	}
 
     ros::ServiceServer reconnectService = n.advertiseService("reconnect", &youBot::YouBotOODLWrapper::reconnectCallback, &youBot);
-
+	std::string rosinfo_string=youBot.youBotConfiguration.configurationFilePath.c_str();
+	rosinfo_string = "Configuration file path:"+ rosinfo_string; //std::str(youBot.youBotConfiguration.configurationFilePath.c_str());
+	prodiag.update("S2-000-003", rosinfo_string);
 	ROS_INFO("Configuration file path: %s", youBot.youBotConfiguration.configurationFilePath.c_str());
 	try {
 		youbot::EthercatMaster::getInstance("youbot-ethercat.cfg", youBot.youBotConfiguration.configurationFilePath);
 	} catch (std::exception& e)	{
+		rosinfo_string = e.what();
+		rosinfo_string = "No EtherCAT connection:"+ rosinfo_string;// std::str(e.what());
+		prodiag.update("E2-000-004", rosinfo_string);
 		ROS_ERROR("No EtherCAT connection:");
 		ROS_FATAL("%s", e.what());
 		return 0;
 	}
-
+	prodiag.update("S2-000-005", "checking if youBotHasBase or youBotHasArms  ");
     ROS_ASSERT((youBotHasBase == true) || (youBotHasArms == true)); // At least one should be true, otherwise nothing to be started.
     if (youBotHasBase == true)
     {
         youBot.initializeBase(youBot.youBotConfiguration.baseConfiguration.baseID);
+		prodiag.update("S2-000-006", " Base Initialized ");
     }
 
 	if (youBotHasArms == true) {
@@ -96,6 +110,7 @@ int main(int argc, char **argv)
 		for (armNameIter = armNames.begin(); armNameIter != armNames.end(); ++armNameIter) {
 			youBot.initializeArm(*armNameIter);
 		}
+		prodiag.update("S2-000-007", " Arm Initialized ");
 	}
  
 
@@ -108,10 +123,11 @@ int main(int argc, char **argv)
         youBot.publishOODLSensorReadings();
         youBot.publishArmAndBaseDiagnostics(2.0);    //publish only every 2 seconds
         rate.sleep();
+		prodiag.update("S2-000-008", " compute and publish ODDLs sensor readings; publish arm,base diagnositics");
     }
 
     youBot.stop();
-
+	prodiag.update("S2-000-009", " YouBot stopped  ");
     return 0;
 }
 

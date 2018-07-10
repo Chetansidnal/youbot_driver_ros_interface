@@ -1,0 +1,6 @@
+{"pub" :[ 
+    {
+        "name" : "youbot_oodl_driver",
+        "connect" : "tcp://*:5555"
+    }]
+}

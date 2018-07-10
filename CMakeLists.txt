@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(youbot_driver_ros_interface)
 
 
-find_package(catkin REQUIRED COMPONENTS youbot_driver roscpp rosconsole actionlib tf control_msgs brics_actuator pr2_msgs diagnostic_msgs geometry_msgs nav_msgs pr2_msgs std_msgs std_srvs trajectory_msgs)
+find_package(catkin REQUIRED COMPONENTS youbot_driver roscpp rosconsole actionlib tf control_msgs brics_actuator pr2_msgs diagnostic_msgs geometry_msgs nav_msgs pr2_msgs std_msgs std_srvs trajectory_msgs diagnose)
 find_package(Boost REQUIRED COMPONENTS thread date_time filesystem system)
 
 catkin_package(
