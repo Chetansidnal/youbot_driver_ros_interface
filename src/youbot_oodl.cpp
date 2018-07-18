@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 	ros::NodeHandle n;
 
 	string config_json;
-	n.getParam("config_json", config_json);
+	n.getParam("/youbot_driver/config_json", config_json);
 	std::cout<<"file path read .........-----"<<config_json<<endl;
 	diaglib prodiag;
 	prodiag.start_publishing("Node Has started", config_json);
