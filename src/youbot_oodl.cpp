@@ -39,6 +39,7 @@
 
 #include "youbot_driver_ros_interface/YouBotOODLWrapper.h"
 #include <diagnose/diaglib.hpp>  //added diagnose
+
 int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "youbot_oodl_driver");
@@ -105,7 +106,7 @@ int main(int argc, char **argv)
         youBot.initializeBase(youBot.youBotConfiguration.baseConfiguration.baseID);
 		prodiag.update("S2-000-006", " Base Initialized ");
     }
-	else {prodiag.update("E2-000-006", " Base Could not Initialized "); }
+	else {prodiag.update("E2-000-006", " Base not Initialized "); }
 
 	if (youBotHasArms == true) {
 		std::vector<std::string>::iterator armNameIter;
@@ -114,7 +115,7 @@ int main(int argc, char **argv)
 		}
 		prodiag.update("S2-000-007", " Arm Initialized ");
 	}
-	else {prodiag.update("E2-000-007", " ARM Could not Initialized "); }
+	else {prodiag.update("E2-000-007", " ARM not Initialized "); }
  
 
     /* coordination */
@@ -126,7 +127,7 @@ int main(int argc, char **argv)
         youBot.publishOODLSensorReadings();
         youBot.publishArmAndBaseDiagnostics(2.0);    //publish only every 2 seconds
         rate.sleep();
-		prodiag.update("S2-000-008", " compute and publish ODDLs sensor readings; publish arm,base diagnositics");
+		// prodiag.update("S2-000-008", " compute and publish ODDLs sensor readings; publish arm,base diagnositics");
     }
 
     youBot.stop();
