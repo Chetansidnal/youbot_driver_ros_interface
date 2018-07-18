@@ -13,7 +13,7 @@ or enable the USE_SETCAP flag in the cmake file and recompile again.
 <launch>
 	<!-- Path to config.json for publishing -->
 	<!-- rosparam param="config_json">"/home/sdp/ros/robocup/src/youbot_driver_ros_interface/config/config.json" </rosparam-->
-	<param param="config_json" type="string" value="$(find youbot_driver)/config/config.json"/>
+	<param name="config_json" type="string" value="$(find youbot_driver)/config/config.json"/>
 	<!-- Set relevant parameters. -->
 	<param name="youBotHasBase" type="bool" value="true"/>
 	<param name="youBotHasArms" type="bool" value="true"/> 
