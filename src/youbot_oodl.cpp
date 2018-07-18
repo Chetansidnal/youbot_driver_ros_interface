@@ -105,6 +105,7 @@ int main(int argc, char **argv)
         youBot.initializeBase(youBot.youBotConfiguration.baseConfiguration.baseID);
 		prodiag.update("S2-000-006", " Base Initialized ");
     }
+	else {prodiag.update("E2-000-006", " Base Could not Initialized "); }
 
 	if (youBotHasArms == true) {
 		std::vector<std::string>::iterator armNameIter;
@@ -113,6 +114,7 @@ int main(int argc, char **argv)
 		}
 		prodiag.update("S2-000-007", " Arm Initialized ");
 	}
+	else {prodiag.update("E2-000-007", " ARM Could not Initialized "); }
  
 
     /* coordination */
